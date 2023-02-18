@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">HLC04_EnriqueFernandez</string>
+
+    <string name="titulo">Servicio de reporiducción de música</string>
+    <string name="boton_arrancar_servicio">Arrancar servicio</string>
+    <string name="boton_parar_servicio">Detener servicio</string>
+    <string name="titulo_servicio_descarga">Servicio de descarga</string>
+    <string name="boton_servicio_descarga">Iniciar Descarga</string>
+
+    <string name="content_description_logo_descarga">Logo de descarga</string>
 </resources>
