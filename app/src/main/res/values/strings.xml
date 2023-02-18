@@ -8,4 +8,5 @@
     <string name="boton_servicio_descarga">Iniciar Descarga</string>
 
     <string name="content_description_logo_descarga">Logo de descarga</string>
+    <string name="content_description_imagen_descargada">Imagen descargada mediante el intent service</string>
 </resources>
