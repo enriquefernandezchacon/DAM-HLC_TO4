@@ -15,21 +15,24 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.hlc04_enriquefernandez.servicios.DescargaService;
+import com.example.hlc04_enriquefernandez.servicios.Filtros;
 import com.example.hlc04_enriquefernandez.servicios.MusicService;
 
 public class MainActivity extends AppCompatActivity {
-
+    // Atributos
     private BroadcastReceiver broadcastReceiver;
+    private ImageView ivImagenDescargada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // Inicializamos los componentes
         Button btStartService = findViewById(R.id.btArrancarServicio);
         Button btStopService = findViewById(R.id.btPararServicio);
         Button btDescarga = findViewById(R.id.btServicioDescarga);
-
+        ivImagenDescargada = findViewById(R.id.ivImgDescargada);
+        // Creamos los evcentos de los botones
         btStartService.setOnClickListener(v -> {
             Toast.makeText(this, "Iniciando Reproductor de música", Toast.LENGTH_SHORT).show();
             startService(new Intent(this, MusicService.class));
@@ -38,12 +41,17 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Deteniendo Reproductor de música", Toast.LENGTH_SHORT).show();
             stopService(new Intent(this, MusicService.class));
         });
-        btDescarga.setOnClickListener(v -> startService(new Intent(this, DescargaService.class)));
-        
+        btDescarga.setOnClickListener(v -> {
+            Toast.makeText(this, "Descargando imagen", Toast.LENGTH_SHORT).show();
+            ivImagenDescargada.setImageBitmap(null);
+            startService(new Intent(this, DescargaService.class));
+        });
+        // Creamos el broadcastReceiver
         crearBroadcastReceiver();
-
-        IntentFilter intentFilter = new IntentFilter(DescargaService.DOWNLOAD_COMPLETE);
-        registerReceiver(broadcastReceiver, intentFilter);
+        // Registramos el broadcastReceiver con el filtro correspondiente
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Filtros.DOWNLOAD_COMPLETE);
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter);
     }
 
     @Override
@@ -57,14 +65,17 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                // Obtenemos la acción del intent
                 String action = intent.getAction();
-                if (action.equals(DescargaService.DOWNLOAD_COMPLETE)) {
+                // Comprobamos si es la acción que nos interesa
+                if (action.equals(Filtros.DOWNLOAD_COMPLETE)) {
+                    // Obtenemos el array de bytes de la imagen
                     byte[] imagen = intent.getByteArrayExtra("imagen");
                     // Creamos un bitmap a partir del array de bytes
                     Bitmap bitmap = BitmapFactory.decodeByteArray(imagen, 0, imagen.length);
                     // Mostramos la imagen en una ImageView
-                    ImageView imageView = findViewById(R.id.imageView);
-                    imageView.setImageBitmap(bitmap);
+                    ivImagenDescargada.setImageBitmap(bitmap);
+                    // Mostramos un Toast indicando que la descarga ha finalizado
                     Toast.makeText(MainActivity.this, "Descarga finalizada", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -7,6 +7,8 @@
     <!-- Permisos para la notificación -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Permisos para la comunicación http -->
+    <uses-permission android:name="android.permission.CLEARTEXT_NETWORK_PERMISSION" />
 
     <application
         android:allowBackup="true"

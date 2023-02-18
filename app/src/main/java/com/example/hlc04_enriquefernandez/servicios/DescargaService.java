@@ -13,9 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DescargaService extends IntentService {
-
-    private static final String URL = "http://http://www.thebiblescholar.com/android_awesome.jpg";
-    public static final String DOWNLOAD_COMPLETE = "com.example.hlc04_enriquefernandez.descargaservice.DOWNLOAD_COMPLETE";
+    // URL de la imagen a descargar
+    private static final String URL = "http://www.thebiblescholar.com/android_awesome.jpg";
 
     public DescargaService() {
         super("DescargaService");
@@ -26,21 +25,22 @@ public class DescargaService extends IntentService {
         // Descargamos la imagen como array de bytes
         byte[] imageData = descargarImagen();
         // Creamos un Intent para notificar la descarga completada
-        Intent completeIntent = new Intent(DOWNLOAD_COMPLETE);
+        Intent completeIntent = new Intent(Filtros.DOWNLOAD_COMPLETE);
         // Añadimos los datos de la imagen descargada como extra
         completeIntent.putExtra("imagen", imageData);
-        // Enviamos el Intent como broadcast local
+        // Enviamos el Intent a través del LocalBroadcastManager
         LocalBroadcastManager.getInstance(this).sendBroadcast(completeIntent);
     }
-
+    // Método para descargar la imagen
     private byte[] descargarImagen() {
         try {
-            // Descargamos la imagen como InputStream
+            // Creamos una conexión HTTP a la URL de la imagen
             java.net.URL url = new URL(URL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setDoInput(true);
+            conexion.connect();
+            // Obtenemos el InputStream de la conexión
+            InputStream input = conexion.getInputStream();
             // Convertimos el InputStream en un array de bytes
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -48,6 +48,7 @@ public class DescargaService extends IntentService {
             while ((n = input.read(buffer)) != -1) {
                 output.write(buffer, 0, n);
             }
+            // Cerramos el InputStream y la conexión
             return output.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
